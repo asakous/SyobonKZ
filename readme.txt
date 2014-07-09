@@ -1,4 +1,4 @@
-Open Syobon Action v0.9
+Open Syobon Action
 ------------------
 by Mathew Velasquez
 
