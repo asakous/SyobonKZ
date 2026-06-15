@@ -4,7 +4,7 @@ extern int ma, t, tt;
 extern SDL_Surface *grap[161][8];
 extern SDL_Surface *mgrap[51];
 int x1;
-extern Mix_Music *otom[6];
+extern Mix_Music *otom[7];
 extern Mix_Chunk *oto[19];
 
 extern int anx[160], any[160];
@@ -36,8 +36,7 @@ grap[t][tt]=0;
 // 透過色を変更
 //SetTransColor( 9*16+9 , 255 , 255 ) ;
 
-//プレイヤー
-    mgrap[0] = LoadGraph("res/player.PNG");
+//+KZ: the first image should have the format that every other image should use
 //ブロック
     mgrap[1] = LoadGraph("res/brock.PNG");
 //アイテム
@@ -53,7 +52,9 @@ grap[t][tt]=0;
 //おまけ2
     mgrap[7] = LoadGraph("res/omake2.PNG");
 //タイトル
-    mgrap[30] = LoadGraph("res/syobon3.PNG");
+    mgrap[30] = LoadGraph("res/syobon3.PNG", false);
+//プレイヤー
+    mgrap[0] = LoadGraph("res/player.PNG");
 
 
 //プレイヤー読み込み
@@ -222,6 +223,7 @@ anx[3]=30;any[3]=44;
     otom[3] = LoadMusicMem("BGM/star4.ogg"); //50
     otom[4] = LoadMusicMem("BGM/castle.ogg"); //50
     otom[5] = LoadMusicMem("BGM/puyo.ogg"); //50
+    otom[6] = LoadMusicMem( "BGM/field3.mp3"); //+KZ from Syobon Action 2 (English version)
 //otom[6]=LoadMusicMem( "BGM/last.ogg");
 //ChangeVolumeSoundMem(50, otom[6]);
 

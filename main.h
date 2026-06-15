@@ -1,3 +1,6 @@
+#ifndef SYOBON_MAIN_H
+#define SYOBON_MAIN_H
+
 #include "DxLib.h"
 using namespace std;
 
@@ -81,7 +84,7 @@ void drawimage(SDL_Surface * mx, int a, int b, int c, int d, int e, int f);
 void setre();
 void setre2();
 void setno();
-Mix_Music *otom[6];
+Mix_Music *otom[7]; //+KZ increased for Syobon Action 2 music
 Mix_Chunk *oto[19];
 void ot(Mix_Chunk * x);
 void bgmchange(Mix_Music * x);
@@ -246,3 +249,5 @@ string xs[31];
 //: Do with this what we did with fma
 long stimeZ;
 #define stime stimeZ
+
+#endif

@@ -60,8 +60,12 @@ void rpaint()
 	for (t = 0; t < nmax; t++) {
 	    xx[0] = na[t] - fx;
 	    xx[1] = nb[t] - fy;
-	    xx[2] = ne[ntype[t]] * 100;
-	    xx[3] = nf[ntype[t]] * 100;
+	    //+KZ: added some checks because this gets out of bounds in level 1-4
+		if(ntype[t] < nmax)
+		{
+	    	xx[2] = ne[ntype[t]] * 100;
+	    	xx[3] = nf[ntype[t]] * 100;
+		}
 	    xx[2] = 16000;
 	    xx[3] = 16000;
 
@@ -1067,9 +1071,7 @@ void rpaint()
 	str("制作・プレイに関わった方々",
 	    240 - 13 * 20 / 2, xx[12] / 100);
 	str("ステージ１　プレイ", 240 - 9 * 20 / 2, xx[13] / 100);
-	//Theres an encoding error here, this is only temporary
-	//str("æy@]`y",240-6*20/2,xx[14]/100);
-	str("TODO: Fix this encoding error...",240-6*20/2,xx[14]/100);
+	str("先輩　Ｘ～Ｚ",240-6*20/2,xx[14]/100);
 	str("ステージ２　プレイ", 240 - 9 * 20 / 2, xx[15] / 100);
 	str("友人　willowlet ", 240 - 8 * 20 / 2, xx[16] / 100);
 	str("ステージ３　プレイ", 240 - 9 * 20 / 2, xx[17] / 100);
@@ -3230,9 +3232,9 @@ if (actaon[2]==1){mb-=400;md=-1400;mjumptm=10;}
 			atm[t]--;
 		    if (abs(ma + mnobia - xx[8] - xx[0] * 2)
 			< 9000
-			&& abs(ma <
+			/*&& abs(ma < //+KZ "warning: result of comparison of constant 3000 with expression of type 'bool' is always true"
 			       xx[8] - anobia[t] +
-			       xx[0] * 2) < 3000
+			       xx[0] * 2) < 3000*/
 			&& md <= -600 && atm[t] <= 0) {
 			if (axtype[t] == 1
 			    && mzimen == 0 && axzimen[t] == 1) {
@@ -10051,7 +10053,7 @@ t=sco;sa[t]=14*29*100+1000;sb[t]=-6000;sc[t]=5000;sd[t]=70000;stype[t]=100;sxtyp
     if (sta == 3 && stb == 1 && stc == 0) {	// 3-1
 	ma = 5600;
 	mb = 32000;
-	bgmchange(otom[1]);
+	bgmchange(otom[6]);
 	stagecolor = 5;
 	scrollx = 2900 * (112 - 19);
 	byte stagedatex[17][1001] = {

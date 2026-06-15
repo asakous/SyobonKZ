@@ -1,16 +1,20 @@
 //This file is a reverse engineered "DxLib.h" to the extent that
 //Syobon Action uses it. Minor functions are just replaced with SDL
 //counterparts.
-#include <SDL/SDL.h>
-#include <SDL/SDL_rotozoom.h>
-#include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_mixer.h>
-#include <SDL/SDL_ttf.h>
+#ifndef SYOBON_DXLIB_H
+#define SYOBON_DXLIB_H
+
+#include <SDL.h>
+#include <SDL_rotozoom.h>
+#include <SDL_gfxPrimitives.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
 #include <string>
+#include <locale.h>
 
 #include "joyconfig.h"
 
@@ -32,7 +36,7 @@
 void PlaySoundMem(Mix_Chunk* s, int l);
 Mix_Chunk* LoadSoundMem(const char* f);
 Mix_Music* LoadMusicMem(const char* f);
-#define CheckSoundMem(s) !s
+#define CheckSoundMem(s) (!s)
 
 int DxLib_Init();
 
@@ -97,4 +101,6 @@ SDL_Surface *DerivationGraph(int srcx, int srcy, int width, int height,
 			     SDL_Surface * src);
 
 //Noticably different than the original
-SDL_Surface *LoadGraph(const char *filename);
+SDL_Surface *LoadGraph(const char *filename, bool fix = true);
+
+#endif

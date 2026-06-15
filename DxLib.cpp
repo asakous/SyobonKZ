@@ -1,5 +1,7 @@
 #include "DxLib.h"
 
+#define SYOBON_COLOR_KEY(img) SDL_MapRGB(img, 9 * 16 + 9, 255, 255)
+
 SDL_Joystick* joystick;
 
 bool keysHeld[SDLK_LAST];
@@ -86,7 +88,7 @@ void ChangeFontType(byte type)
 
 void DrawString(int a, int b, const char *x, Uint32 c)
 {
-    SDL_Color color = { c >> 16, c >> 8, c };
+    SDL_Color color = { (Uint8)(c >> 16), (Uint8)(c >> 8), (Uint8)(c) };
     SDL_Surface *rendered = TTF_RenderUTF8_Solid(font[fontsize], x, color);
     if (fontType == DX_FONTTYPE_EDGE) {
 	SDL_Color blk = { 0, 0, 0 };
@@ -110,10 +112,10 @@ void DrawFormatString(int a, int b, Uint32 color, const char *str, ...)
     va_list args;
     char *newstr = new char[strlen(str) + 16];
     va_start(args, str);
-    vsprintf(newstr, str, args);
+    vsnprintf(newstr, sizeof(newstr), str, args);
     va_end(args);
     DrawString(a, b, newstr, color);
-    delete newstr;
+    delete[] newstr;
 }
 
 //void DrawFormatString(int a, int b, int c
@@ -205,14 +207,19 @@ void DrawTurnGraphZ(int a, int b, SDL_Surface * mx)
 {
     if(mx)
     {
+        SDL_Rect srcrect;
+        srcrect.x = srcrect.y = 0;
+        srcrect.w = mx->w;
+        srcrect.h = mx->h;
+
         SDL_Rect offset;
         offset.x = a;
         offset.y = b;
 
         SDL_Surface *flipped = zoomSurface(mx, -1, 1, 0);
         SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
-                SDL_MapRGB(flipped->format, 9 * 16 + 9, 255, 255));
-        SDL_BlitSurface(flipped, NULL, screen, &offset);
+                SYOBON_COLOR_KEY(flipped->format));
+        SDL_BlitSurface(flipped, &srcrect, screen, &offset);
         SDL_FreeSurface(flipped);
     }
 }
@@ -221,14 +228,19 @@ void DrawVertTurnGraph(int a, int b, SDL_Surface * mx)
 {
     if(mx)
     {
+        SDL_Rect srcrect;
+        srcrect.x = srcrect.y = 0;
+        srcrect.w = mx->w;
+        srcrect.h = mx->h;
+
         SDL_Rect offset;
         offset.x = a - mx->w / 2;
         offset.y = b - mx->h / 2;
 
-        SDL_Surface *flipped = rotozoomSurface(mx, 180, 1, 0);
+        SDL_Surface *flipped = zoomSurface(mx, -1, -1, 0);
         SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
-                SDL_MapRGB(flipped->format, 9 * 16 + 9, 255, 255));
-        SDL_BlitSurface(flipped, NULL, screen, &offset);
+                SYOBON_COLOR_KEY(flipped->format));
+        SDL_BlitSurface(flipped, &srcrect, screen, &offset);
         SDL_FreeSurface(flipped);
     }
 }
@@ -250,16 +262,52 @@ SDL_Surface *DerivationGraph(int srcx, int srcy, int width, int height,
 
     SDL_BlitSurface(src, &offset, img, NULL);
     SDL_SetColorKey(img, SDL_SRCCOLORKEY,
-		    SDL_MapRGB(img->format, 9 * 16 + 9, 255, 255));
+		    SYOBON_COLOR_KEY(img->format));
     return img;
 }
 
 //Noticably different than the original
-SDL_Surface *LoadGraph(const char *filename)
+SDL_Surface *LoadGraph(const char *filename, bool fix)
 {
     SDL_Surface *image = IMG_Load(filename);
 
-    if (image) return image;
+    if (image)
+    {
+        if(fix)
+        {
+            static SDL_PixelFormat fmt;
+            static char setfmt = 0;
+            if(!setfmt)
+            {
+                fmt = *(image->format);
+                setfmt = 1;
+            }
+            SDL_PixelFormat newfmt = *(image->format);
+            
+            if(newfmt.BytesPerPixel != 1)
+            {
+                printf("WARNING: %s pixel format is not the one required, trying to fix...\n", filename);
+
+                SDL_Surface *newimage = SDL_ConvertSurface(image, &fmt, SDL_SWSURFACE | SDL_SRCALPHA | SDL_SRCCOLORKEY);
+                if(newimage)
+                {
+                    printf("Successfully converted\n");
+                    SDL_FreeSurface(image);
+                    image = newimage;
+                    newimage = nullptr;
+                }
+                else
+                {
+                    printf("Conversion failed: %s\n", SDL_GetError());
+                }
+            }
+        }
+
+        if(image)
+        {
+            return image;
+        }
+    }
 	fprintf(stderr, "Error: Unable to load %s: %s\n", filename, IMG_GetError());
 	exit(1);
 }

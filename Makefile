@@ -1,8 +1,11 @@
+CFLAGS:= `pkg-config --cflags sdl sdl_gfx sdl_ttf sdl_mixer sdl_image`
+LDFLAGS:= `pkg-config --libs sdl sdl_gfx sdl_ttf sdl_mixer sdl_image`
+
 SyobonAction:main.o loadg.o DxLib.o
-	gcc main.o loadg.o DxLib.o -o SyobonAction `sdl-config --libs` -lSDL_gfx -lSDL_image -lSDL_mixer -lSDL_ttf
-main.o:main.cpp
-	gcc -c main.cpp
-loadg.o:loadg.cpp
-	gcc -c loadg.cpp
-DxLib.o:DxLib.cpp
-	gcc -c DxLib.cpp
+	$(CXX) $(LDFLAGS) main.o loadg.o DxLib.o -o SyobonAction
+
+%.o : %.cpp
+	$(CXX) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm *.o
