@@ -40,23 +40,23 @@ grap[t][tt]=0;
 //SetTransColor( 9*16+9 , 255 , 255 ) ;
 
 //プレイヤー
-    mgrap[0] = LoadGraph("res/player.png");
+    mgrap[0] = LoadGraph("res/player.PNG");
 //ブロック
-    mgrap[1] = LoadGraph("res/brock.png");
+    mgrap[1] = LoadGraph("res/brock.PNG");
 //アイテム
-    mgrap[2] = LoadGraph("res/item.png");
+    mgrap[2] = LoadGraph("res/item.PNG");
 //敵
-    mgrap[3] = LoadGraph("res/teki.png");
+    mgrap[3] = LoadGraph("res/teki.PNG");
 //背景
-    mgrap[4] = LoadGraph("res/haikei.png");
+    mgrap[4] = LoadGraph("res/haikei.PNG");
 //ブロック2
-    mgrap[5] = LoadGraph("res/brock2.png");
+    mgrap[5] = LoadGraph("res/brock2.PNG");
 //おまけ
-    mgrap[6] = LoadGraph("res/omake.png");
+    mgrap[6] = LoadGraph("res/omake.PNG");
 //おまけ2
-    mgrap[7] = LoadGraph("res/omake2.png");
+    mgrap[7] = LoadGraph("res/omake2.PNG");
 //タイトル
-    mgrap[30] = LoadGraph("res/syobon3.png");
+    mgrap[30] = LoadGraph("res/syobon3.PNG");
 
 
 //プレイヤー読み込み
@@ -220,19 +220,16 @@ anx[3]=30;any[3]=44;
 //ogg読み込み
 //try{
 //oto[2] = LoadSoundMem( "SE/1.mp3" ) ;
-    otom[1] = LoadMusicMem("BGM/field.ogg");
-    ChangeVolumeSoundMem(50, otom[1]);
-    otom[2] = LoadMusicMem("BGM/dungeon.ogg");
-    ChangeVolumeSoundMem(50, otom[2]);
-    otom[3] = LoadMusicMem("BGM/star4.ogg");
-    otom[4] = LoadMusicMem("BGM/castle.ogg");
-    ChangeVolumeSoundMem(50, otom[4]);
-    otom[5] = LoadMusicMem("BGM/puyo.ogg");
+    otom[1] = LoadMusicMem("BGM/field.ogg"); //50
+    otom[2] = LoadMusicMem("BGM/dungeon.ogg"); //40
+    otom[3] = LoadMusicMem("BGM/star4.ogg"); //50
+    otom[4] = LoadMusicMem("BGM/castle.ogg"); //50
+    otom[5] = LoadMusicMem("BGM/puyo.ogg"); //50
 //otom[6]=LoadMusicMem( "BGM/last.ogg");
 //ChangeVolumeSoundMem(50, otom[6]);
 
     oto[1] = LoadSoundMem("SE/jump.ogg");
-//oto[2] = LoadSoundMem("SE/brockcoin.mp3");
+//oto[2] = LoadSoundMem("SE/brockcoin.ogg");
     oto[3] = LoadSoundMem("SE/brockbreak.ogg");
     oto[4] = LoadSoundMem("SE/coin.ogg");
     oto[5] = LoadSoundMem("SE/humi.ogg");
@@ -251,10 +248,6 @@ anx[3]=30;any[3]=44;
     oto[18] = LoadSoundMem("SE/tekifire.ogg");
 
 //}catch( int num){end();}
-
-
-    x1 = 40;
-    ChangeVolumeSoundMem(255 * x1 / 100, otom[2]);
 
 
 //ループ設定-20000-20秒

@@ -1,5 +1,7 @@
 #include "DxLib.h"
 
+SDL_Joystick* joystick;
+
 bool keysHeld[SDLK_LAST];
 int DxLib_Init()
 {
@@ -39,6 +41,8 @@ int DxLib_Init()
 	printf("Unable to init SDL_mixer: %s\n", Mix_GetError());
 	return -1;
     }
+    //Try to get a joystick
+    joystick = SDL_JoystickOpen(0);
 
     for (int i = 0; i < SDLK_LAST; i++)
 	keysHeld[i] = false;
@@ -82,10 +86,14 @@ void DrawString(int a, int b, const char *x, Uint32 c)
     if (fontType == DX_FONTTYPE_EDGE) {
 	SDL_Color blk = { 0, 0, 0 };
 	SDL_Surface *shadow = TTF_RenderUTF8_Solid(font[fontsize], x, blk);
-	for (int i = a - 1; i <= a + 1; i++)
-	    for (int j = b - 1; j <= b + 1; j++) {
-		DrawGraphZ(i, j, shadow);
-	    }
+	DrawGraphZ(a - 1, b - 1, shadow);
+	DrawGraphZ(a, b - 1, shadow);
+	DrawGraphZ(a + 1, b - 1, shadow);
+	DrawGraphZ(a - 1, b, shadow);
+	DrawGraphZ(a + 1, b, shadow);
+	DrawGraphZ(a - 1, b + 1, shadow);
+	DrawGraphZ(a, b + 1, shadow);
+	DrawGraphZ(a + 1, b + 1, shadow);
 	SDL_FreeSurface(shadow);
     }
     DrawGraphZ(a, b, rendered);
@@ -121,6 +129,29 @@ void UpdateKeys()
 	case SDL_KEYUP:
 	    keysHeld[event.key.keysym.sym] = false;
 	    break;
+	case SDL_JOYAXISMOTION:
+	    if(event.jaxis.which == 0)
+	    {
+		if(event.jaxis.axis == JOYSTICK_XAXIS)
+		{
+		    if(event.jaxis.value < 0) keysHeld[SDLK_LEFT] = true;
+		    else if(event.jaxis.value > 0) keysHeld[SDLK_RIGHT] = true;
+		    else {
+			keysHeld[SDLK_LEFT] = false;
+			keysHeld[SDLK_RIGHT] = false;
+		    }
+		}
+		else if(event.jaxis.axis == JOYSTICK_YAXIS)
+		{
+		    if(event.jaxis.value < 0) keysHeld[SDLK_UP] = true;
+		    else if(event.jaxis.value > 0) keysHeld[SDLK_DOWN] = true;
+		    else {
+			keysHeld[SDLK_UP] = false;
+			keysHeld[SDLK_DOWN] = false;
+		    }
+		}
+	    }
+	    break;
 	case SDL_QUIT:
 	    ex = true;
 	    break;
@@ -155,36 +186,45 @@ byte WaitKey()
 
 void DrawGraphZ(int a, int b, SDL_Surface * mx)
 {
-    SDL_Rect offset;
-    offset.x = a;
-    offset.y = b;
-    SDL_BlitSurface(mx, NULL, screen, &offset);
+    if(mx)
+    {
+        SDL_Rect offset;
+        offset.x = a;
+        offset.y = b;
+        SDL_BlitSurface(mx, NULL, screen, &offset);
+    }
 }
 
 void DrawTurnGraphZ(int a, int b, SDL_Surface * mx)
 {
-    SDL_Rect offset;
-    offset.x = a;
-    offset.y = b;
+    if(mx)
+    {
+        SDL_Rect offset;
+        offset.x = a;
+        offset.y = b;
 
-    SDL_Surface *flipped = zoomSurface(mx, -1, 1, 0);
-    SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
-		    SDL_MapRGB(flipped->format, 9 * 16 + 9, 255, 255));
-    SDL_BlitSurface(flipped, NULL, screen, &offset);
-    SDL_FreeSurface(flipped);
+        SDL_Surface *flipped = zoomSurface(mx, -1, 1, 0);
+        SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
+                SDL_MapRGB(flipped->format, 9 * 16 + 9, 255, 255));
+        SDL_BlitSurface(flipped, NULL, screen, &offset);
+        SDL_FreeSurface(flipped);
+    }
 }
 
 void DrawVertTurnGraph(int a, int b, SDL_Surface * mx)
 {
-    SDL_Rect offset;
-    offset.x = a - mx->w / 2;
-    offset.y = b - mx->h / 2;
+    if(mx)
+    {
+        SDL_Rect offset;
+        offset.x = a - mx->w / 2;
+        offset.y = b - mx->h / 2;
 
-    SDL_Surface *flipped = rotozoomSurface(mx, 180, 1, 0);
-    SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
-		    SDL_MapRGB(flipped->format, 9 * 16 + 9, 255, 255));
-    SDL_BlitSurface(flipped, NULL, screen, &offset);
-    SDL_FreeSurface(flipped);
+        SDL_Surface *flipped = rotozoomSurface(mx, 180, 1, 0);
+        SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
+                SDL_MapRGB(flipped->format, 9 * 16 + 9, 255, 255));
+        SDL_BlitSurface(flipped, NULL, screen, &offset);
+        SDL_FreeSurface(flipped);
+    }
 }
 
 SDL_Surface *DerivationGraph(int srcx, int srcy, int width, int height,

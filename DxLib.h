@@ -12,6 +12,8 @@
 #include <math.h>
 #include <string>
 
+#include "joyconfig.h"
+
 #define TRUE 1
 #define FALSE 0
 #define byte unsigned char
@@ -70,6 +72,8 @@ void DrawFormatString(int a, int b, Uint32 color, const char *str, ...);
 #define KEY_INPUT_8 SDLK_8
 #define KEY_INPUT_9 SDLK_9
 #define KEY_INPUT_0 SDLK_0
+
+extern SDL_Joystick* joystick;
 
 void UpdateKeys();
 byte ProcessMessage();

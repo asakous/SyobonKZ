@@ -1250,7 +1250,8 @@ void Mainprogram()
 	}
 
 	if (mkeytm <= 0) {
-	    if (CheckHitKey(KEY_INPUT_Z) == 1 || CheckHitKey(KEY_INPUT_UP) == 1) {	//end();
+	    if (CheckHitKey(KEY_INPUT_Z) == 1 || CheckHitKey(KEY_INPUT_UP) == 1
+		|| SDL_JoystickGetButton(joystick, JOYSTICK_JUMP)) {
 		if (actaon[1] == 10) {
 		    actaon[1] = 1;
 		    xx[0] = 1;
@@ -1260,7 +1261,8 @@ void Mainprogram()
 	}
 
 	if (CheckHitKey(KEY_INPUT_Z) == 1
-	    || CheckHitKey(KEY_INPUT_UP) == 1) {
+	    || CheckHitKey(KEY_INPUT_UP) == 1
+	    || SDL_JoystickGetButton(joystick, JOYSTICK_JUMP)) {
 	    if (mjumptm == 8 && md >= -900) {
 		md = -1300;
 //ダッシュ中
@@ -4727,6 +4729,9 @@ void end()
     for (int i = 0; i < FONT_MAX; i++)
 	TTF_CloseFont(font[i]);
 
+//Joystick
+    SDL_JoystickClose(joystick);
+
 //Close libraries
     IMG_Quit();
     TTF_Quit();
@@ -4769,13 +4774,13 @@ void drawline(int a, int b, int c, int d)
 //四角形(塗り無し)
 void drawrect(int a, int b, int c, int d)
 {
-    rectangleColor(screen, a, b, a + c, b + d, gfxcolor);
+    rectangleColor(screen, a, b, a + c - 1, b + d - 1, gfxcolor);
 }
 
 //四角形(塗り有り)
 void fillrect(int a, int b, int c, int d)
 {
-    boxColor(screen, a, b, a + c, b + d, gfxcolor);
+    boxColor(screen, a, b, a + c - 1, b + d - 1, gfxcolor);
 }
 
 //円(塗り無し)
@@ -10405,7 +10410,9 @@ void bgmchange(Mix_Music * x)
     Mix_HaltMusic();
 //otom[0]=0;
     otom[0] = x;
-    Mix_PlayMusic(otom[0], -1);
+    Mix_PlayMusic(otom[0], -1);;
+    if(x == otom[2]) Mix_VolumeMusic(MIX_MAX_VOLUME * 40 / 100);
+    else Mix_VolumeMusic(MIX_MAX_VOLUME * 50 / 100);
 }				//bgmchange()
 
 //ブロック出現
