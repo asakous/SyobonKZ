@@ -29,9 +29,9 @@
 //Sound
 #define DX_PLAYTYPE_LOOP -1
 #define DX_PLAYTYPE_BACK 0
-#define PlaySoundMem(s, l) Mix_PlayChannel(-1, s, l)
-#define LoadSoundMem(s) Mix_LoadWAV(s)
-#define LoadMusicMem(m) Mix_LoadMUS(m)
+void PlaySoundMem(Mix_Chunk* s, int l);
+Mix_Chunk* LoadSoundMem(const char* f);
+Mix_Music* LoadMusicMem(const char* f);
 #define CheckSoundMem(s) !s
 
 int DxLib_Init();

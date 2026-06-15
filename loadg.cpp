@@ -1,8 +1,5 @@
 #include "DxLib.h"
 
-
-void end();
-
 extern int ma, t, tt;
 extern SDL_Surface *grap[161][8];
 extern SDL_Surface *mgrap[51];
@@ -255,8 +252,14 @@ anx[3]=30;any[3]=44;
 //SetLoopSamplePosSoundMem(44100,oto[104]);
 //SetLoopSamplePosSoundMem(22050,oto[104]);
 
+}
 
-
-
-
+extern bool sound;
+void parseArgs(int argc, char* argv[])
+{
+    if(argc <= 1) return;
+    for(int i = 0; i < argc; i++)
+    {
+        if(!strcasecmp(argv[i], "-nosound")) sound = false;
+    }
 }

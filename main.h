@@ -4,6 +4,7 @@ using namespace std;
 #define SHORT
 
 void loadg();
+void parseArgs(int argc, char* argv[]);
 
 //String 使用
 
@@ -54,7 +55,7 @@ int maint;
 #define wait(i) SDL_Delay(i)
 void wait2(long stime, long etime, int FLAME_TIME);
 int rand(int Rand);
-void end();
+#define end() exit(0)
 
 //描画
 Uint32 color;

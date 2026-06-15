@@ -3,12 +3,15 @@
 SDL_Joystick* joystick;
 
 bool keysHeld[SDLK_LAST];
+bool sound = true;
+void deinit();
 int DxLib_Init()
 {
-    setlocale(LC_CTYPE, "en_ca.UTF-8");
+    atexit(deinit);
+    setlocale(LC_CTYPE, "ja_JP.UTF-8");
 
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-	printf("Unable to init SDL: %s\n", SDL_GetError());
+	fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
 	return -1;
     }
 
@@ -25,22 +28,24 @@ int DxLib_Init()
 		      NULL);
     SDL_ShowCursor(SDL_DISABLE);
 
+    if(IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
+    {
+        fprintf(stderr, "Unable to init SDL_img: %s\n", IMG_GetError());
+        return -1;
+    }
+
     //Initialize font
     if (TTF_Init() == -1) {
-	printf("Unable to init SDL_ttf: %s\n", TTF_GetError());
+	fprintf(stderr, "Unable to init SDL_ttf: %s\n", TTF_GetError());
 	return -1;
     }
 
-    if (font == NULL) {
-	printf("Unable to load font: %s\n", TTF_GetError());
-	return -1;
-    }
     //Audio Rate, Audio Format, Audio Channels, Audio Buffers
 #define AUDIO_CHANNELS 4
-    if (Mix_OpenAudio(22050, AUDIO_S16SYS, AUDIO_CHANNELS, 1024)) {
-	printf("Unable to init SDL_mixer: %s\n", Mix_GetError());
-	return -1;
-    }
+    if (sound && Mix_OpenAudio(22050, AUDIO_S16SYS, AUDIO_CHANNELS, 1024)) {
+        fprintf(stderr, "Unable to init SDL_mixer: %s\n", Mix_GetError());
+        sound = false;
+        }
     //Try to get a joystick
     joystick = SDL_JoystickOpen(0);
 
@@ -166,6 +171,7 @@ byte ProcessMessage()
 
 byte CheckHitKey(int key)
 {
+    if(key == SDLK_z && keysHeld[SDLK_SEMICOLON]) return true;
     return keysHeld[key];
 }
 
@@ -253,10 +259,33 @@ SDL_Surface *LoadGraph(const char *filename)
 {
     SDL_Surface *image = IMG_Load(filename);
 
-    if (image) {
-	return image;
-    } else {
-	fprintf(stderr, "Error: Unable to load %s\n", filename);
+    if (image) return image;
+	fprintf(stderr, "Error: Unable to load %s: %s\n", filename, IMG_GetError());
 	exit(1);
-    }
 }
+
+void PlaySoundMem(Mix_Chunk* s, int l)
+{
+    if(sound) Mix_PlayChannel(-1, s, l);
+}
+
+Mix_Chunk* LoadSoundMem(const char* f)
+{
+    if(!sound) return NULL;
+
+    Mix_Chunk* s = Mix_LoadWAV(f);
+    if(s) return s;
+    fprintf(stderr, "Error: Unable to load sound %s: %s\n", f, Mix_GetError());
+    return NULL;
+}
+
+Mix_Music* LoadMusicMem(const char* f)
+{
+    if(!sound) return NULL;
+
+    Mix_Music* m = Mix_LoadMUS(f);
+    if(m) return m;
+    fprintf(stderr, "Error: Unable to load music %s: %s\n", f, Mix_GetError());
+    return NULL;
+}
+

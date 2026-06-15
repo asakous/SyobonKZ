@@ -2,11 +2,9 @@
 
 // プログラムは WinMain から始まります
 //Changed to ansi c++ main()
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
-//Now define the 'main' alias
-#define main mainZ
-
+    parseArgs(argc, argv);
     if (DxLib_Init() == -1)
 	return 1;
 
@@ -56,7 +54,7 @@ void rpaint()
 //: Clear screen
     FillScreen();
 
-    if (main == 1 && zxon >= 1) {
+    if (mainZ == 1 && zxon >= 1) {
 
 //背景
 	for (t = 0; t < nmax; t++) {
@@ -1063,7 +1061,7 @@ void rpaint()
 	}			//blacktm
     }
 
-    if (main == 2) {
+    if (mainZ == 2) {
 
 	setcolor(255, 255, 255);
 	str("制作・プレイに関わった方々",
@@ -1093,7 +1091,7 @@ void rpaint()
 	str("プレイしていただき　ありがとうございました〜", 240 - 22 * 20 / 2, xx[30] / 100);
     }
 //Showing lives
-    if (main == 10) {
+    if (mainZ == 10) {
 
 	setc0();
 	FillScreen();
@@ -1107,7 +1105,7 @@ void rpaint()
 
     }
 //タイトル
-    if (main == 100) {
+    if (mainZ == 100) {
 
 	setcolor(160, 180, 250);
 	fillrect(0, 0, fxmax, fymax);
@@ -1139,11 +1137,11 @@ void Mainprogram()
     stime = long (GetNowCount());
 
     if (ending == 1)
-	main = 2;
+	mainZ = 2;
 
 //キー
 
-    if (main == 1 && tmsgtype == 0) {
+    if (mainZ == 1 && tmsgtype == 0) {
 
 	if (zxon == 0) {
 	    zxon = 1;
@@ -1237,7 +1235,7 @@ void Mainprogram()
 	}
 //if (CheckHitKey(KEY_INPUT_F1)==1){end();}
 	if (CheckHitKey(KEY_INPUT_F1) == 1) {
-	    main = 100;
+	    mainZ = 100;
 	}
 //if (CheckHitKey(KEY_INPUT_Q)==1){mkeytm=0;}
 	if (CheckHitKey(KEY_INPUT_O) == 1) {
@@ -1428,7 +1426,7 @@ if (mc>=800 || mc<=-800){md=-1800;}
 	    }
 	    if (mtm >= 100 || fast == 1) {
 		zxon = 0;
-		main = 10;
+		mainZ = 10;
 		mtm = 0;
 		mkeytm = 0;
 		nokori--;
@@ -1595,7 +1593,7 @@ if (mc>=800 || mc<=-800){md=-1800;}
 		    stc = 0;
 		    zxon = 0;
 		    tyuukan = 0;
-		    main = 10;
+		    mainZ = 10;
 		    maintm = 0;
 		}
 	    }			//mtype==300
@@ -1664,7 +1662,7 @@ if (mc>=800 || mc<=-800){md=-1800;}
 			stc = 0;
 			zxon = 0;
 			tyuukan = 0;
-			main = 10;
+			mainZ = 10;
 			maintm = 0;
 		    }
 		}
@@ -4319,10 +4317,10 @@ if (atype[t]==133){msoubi=4;}
 //if (xx[3]==1){if (tyuukan==1)tyuukan=1;}
 	}			//kscroll
 
-    }				//if (main==1){
+    }				//if (mainZ==1){
 
 //スタッフロール
-    if (main == 2) {
+    if (mainZ == 2) {
 	maintm++;
 
 	xx[7] = 46;
@@ -4380,28 +4378,28 @@ if (atype[t]==133){msoubi=4;}
 	    bgmchange(otom[5]);
 	}
 	if (xx[30] <= -400) {
-	    main = 100;
+	    mainZ = 100;
 	    nokori = 2;
 	    maintm = 0;
 	    ending = 0;
 	}
 
-    }				//main==2
+    }				//mainZ==2
 
-    if (main == 10) {
+    if (mainZ == 10) {
 	maintm++;
 
 	if (fast == 1)
 	    maintm += 2;
 	if (maintm >= 30) {
 	    maintm = 0;
-	    main = 1;
+	    mainZ = 1;
 	    zxon = 0;
 	}
-    }				//if (main==10){
+    }				//if (mainZ==10){
 
 //タイトル
-    if (main == 100) {
+    if (mainZ == 100) {
 	maintm++;
 	xx[0] = 0;
 	if (maintm <= 10) {
@@ -4471,7 +4469,7 @@ if (atype[t]==133){msoubi=4;}
 	}
 
 	if (xx[0] == 1) {
-	    main = 10;
+	    mainZ = 10;
 	    zxon = 0;
 	    maintm = 0;
 	    nokori = 2;
@@ -4703,7 +4701,7 @@ int rand(int Rand)
 }
 
 //終了
-void end()
+void deinit()
 {
     setc0();
     FillScreen();
@@ -4735,8 +4733,8 @@ void end()
 //Close libraries
     IMG_Quit();
     TTF_Quit();
+    Mix_Quit();
     SDL_Quit();
-    exit(0);
 }
 
 //画像関係
