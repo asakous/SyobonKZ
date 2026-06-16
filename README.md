@@ -1,3 +1,11 @@
+# 繁體化修改
+修改 main.cpp 上的日文語句用 AI 機翻成翻體中文 (Codex)
+# Google antigravity 修改
+把視窗由固定左上大小改為自動偵測
+Prompt:修改遊戲 SDL 視窗大小可自動偵測目前營幕解析度然後自動設定
+# Makefile
+Claude Code 改成符合 Ubuntu 22 格式的 Makefile 。
+
 SyobonKZ
 ==================
 ###### Original games developers: 
