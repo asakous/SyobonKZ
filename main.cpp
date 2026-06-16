@@ -136,14 +136,14 @@ void rpaint()
 		    setcolor(0, 0, 0);
 		    drawarc(xx[0] / 100, xx[1] / 100, 7, 7);
 		}
-//リフトの破片
+//リフトの破片 (Lift fragments)
 		if (egtype[t] == 2 || egtype[t] == 3) {
 		    if (egtype[t] == 3)
 			mirror = 1;
 		    drawimage(grap[0][5], xx[0] / 100, xx[1] / 100);
 		    mirror = 0;
 		}
-//ポール
+//ポール (pole)
 		if (egtype[t] == 4) {
 		    setc1();
 		    fillrect((xx[0]) / 100 + 10, (xx[1]) / 100, 10, xx[3]);
@@ -158,7 +158,7 @@ void rpaint()
 	    }
 	}
 
-//リフト
+//リフト (lift)
 	for (t = 0; t < srmax; t++) {
 	    xx[0] = sra[t] - fx;
 	    xx[1] = srb[t] - fy;
@@ -222,7 +222,7 @@ void rpaint()
 	    }
 	}			//t
 
-//プレイヤー描画
+//プレイヤー描画 (Player rendering)
 	setcolor(0, 0, 255);
 
 	if (mactp >= 2000) {
@@ -238,7 +238,7 @@ void rpaint()
 
 	if (mtype != 200 && mtype != 1) {
 	    if (mzimen == 1) {
-// 読みこんだグラフィックを拡大描画
+// 読みこんだグラフィックを拡大描画 (Enlarged rendering of loaded graphics)
 		if (mact == 0)
 		    drawimage(grap[0][0], ma / 100, mb / 100);
 		if (mact == 1)
@@ -248,7 +248,7 @@ void rpaint()
 		drawimage(grap[2][0], ma / 100, mb / 100);
 	    }
 	}
-//巨大化
+//巨大化 (Huge)
 	else if (mtype == 1) {
 	    drawimage(grap[41][0], ma / 100, mb / 100);
 	}
@@ -259,7 +259,7 @@ void rpaint()
 
 	mirror = 0;
 
-//敵キャラ
+//敵キャラ (Enemy character)
 	for (t = 0; t < amax; t++) {
 
 	    xx[0] = aa[t] - fx;
@@ -287,7 +287,7 @@ void rpaint()
 		if (atype[t] >= 100 && amuki[t] == 1)
 		    mirror = 0;
 
-//メイン
+//メイン (main)
 		if (atype[t] < 200 && xx[16] == 0
 		    && atype[t] != 6 && atype[t] != 79
 		    && atype[t] != 86 && atype[t] != 30) {
@@ -297,7 +297,7 @@ void rpaint()
 				  xx[0] / 100, xx[1] / 100);
 		    }
 		}
-//デフラグさん
+//デフラグさん (Defrag-san)
 		if (atype[t] == 6) {
 		    if (atm[t] >= 10 && atm[t] <= 19
 			|| atm[t] >= 100 && atm[t] <= 119
@@ -307,14 +307,14 @@ void rpaint()
 			drawimage(grap[6][3], xx[0] / 100, xx[1] / 100);
 		    }
 		}
-//モララー
+//モララー (Molalla)
 		if (atype[t] == 30) {
 		    if (axtype[t] == 0)
 			drawimage(grap[30][3], xx[0] / 100, xx[1] / 100);
 		    if (axtype[t] == 1)
 			drawimage(grap[155][3], xx[0] / 100, xx[1] / 100);
 		}
-//ステルス雲
+//ステルス雲 (Stealth cloud)
 		if ((atype[t] == 81) && axtype[t] == 1) {
 		    drawimage(grap[130][3], xx[0] / 100, xx[1] / 100);
 		}

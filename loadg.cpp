@@ -37,27 +37,27 @@ grap[t][tt]=0;
 //SetTransColor( 9*16+9 , 255 , 255 ) ;
 
 //+KZ: the first image should have the format that every other image should use
-//ブロック
+//ブロック (Block)
     mgrap[1] = LoadGraph("res/brock.PNG");
-//アイテム
+//アイテム (item)
     mgrap[2] = LoadGraph("res/item.PNG");
-//敵
+//敵 (enemy)
     mgrap[3] = LoadGraph("res/teki.PNG");
-//背景
+//背景 (background)
     mgrap[4] = LoadGraph("res/haikei.PNG");
-//ブロック2
+//ブロック2 (Block 2)
     mgrap[5] = LoadGraph("res/brock2.PNG");
-//おまけ
+//おまけ (Extra)
     mgrap[6] = LoadGraph("res/omake.PNG");
-//おまけ2
+//おまけ2 (Extra 2)
     mgrap[7] = LoadGraph("res/omake2.PNG");
-//タイトル
+//タイトル (Title)
     mgrap[30] = LoadGraph("res/syobon3.PNG", false);
-//プレイヤー
+//プレイヤー (Player)
     mgrap[0] = LoadGraph("res/player.PNG");
 
 
-//プレイヤー読み込み
+//プレイヤー読み込み (Player loading)
     grap[40][0] = DerivationGraph(0, 0, 30, 36, mgrap[0]);
     grap[0][0] = DerivationGraph(31 * 4, 0, 30, 36, mgrap[0]);
     grap[1][0] = DerivationGraph(31 * 1, 0, 30, 36, mgrap[0]);
@@ -66,7 +66,7 @@ grap[t][tt]=0;
     grap[41][0] = DerivationGraph(50, 0, 51, 73, mgrap[6]);
 
     x1 = 1;
-//ブロック読み込み
+//ブロック読み込み (Block loading)
     for (t = 0; t <= 6; t++) {
 	grap[t][x1] = DerivationGraph(33 * t, 0, 30, 30, mgrap[x1]);
 	grap[t + 30][x1] = DerivationGraph(33 * t, 33, 30, 30, mgrap[x1]);
@@ -79,7 +79,7 @@ grap[t][tt]=0;
     grap[40][x1] = DerivationGraph(33 * 9, 33, 30, 30, mgrap[x1]);
     grap[70][x1] = DerivationGraph(33 * 9, 66, 30, 30, mgrap[x1]);
     grap[100][x1] = DerivationGraph(33 * 9, 99, 30, 30, mgrap[x1]);
-//ブロック読み込み2
+//ブロック読み込み2 (Block loading 2)
     x1 = 5;
     for (t = 0; t <= 6; t++) {
 	grap[t][x1] = DerivationGraph(33 * t, 0, 30, 30, mgrap[x1]);
@@ -90,13 +90,13 @@ grap[t][tt]=0;
     grap[13][5] = DerivationGraph(33 * 1, 66, 30, 30, mgrap[x1]);
     grap[14][5] = DerivationGraph(33 * 2, 66, 30, 30, mgrap[x1]);
 
-//アイテム読み込み
+//アイテム読み込み (Item loading)
     x1 = 2;
     for (t = 0; t <= 5; t++) {
 	grap[t][x1] = DerivationGraph(33 * t, 0, 30, 30, mgrap[x1]);
     }
 
-//敵キャラ読み込み
+//敵キャラ読み込み (Loading enemy characters)
     x1 = 3;
     grap[0][x1] = DerivationGraph(33 * 0, 0, 30, 30, mgrap[x1]);
     grap[1][x1] = DerivationGraph(33 * 1, 0, 30, 43, mgrap[x1]);
@@ -112,7 +112,7 @@ grap[t][tt]=0;
     grap[9][x1] = DerivationGraph(33 * 7 + 1, 0, 26, 30, mgrap[x1]);
     grap[10][x1] = DerivationGraph(214, 0, 46, 16, mgrap[6]);
 
-//モララー
+//モララー (Molalla)
     grap[30][x1] = DerivationGraph(0, 56, 30, 36, mgrap[7]);
     grap[155][x1] = DerivationGraph(31 * 3, 56, 30, 36, mgrap[7]);
     grap[31][x1] = DerivationGraph(50, 74, 49, 79, mgrap[6]);
@@ -138,7 +138,7 @@ grap[t][tt]=0;
     grap[110][x1] = DerivationGraph(33 * 4, 0, 30, 30, mgrap[2]);
 
 
-//背景読み込み
+//背景読み込み (Background loading)
     x1 = 4;
     grap[0][x1] = DerivationGraph(0, 0, 150, 90, mgrap[x1]);
     grap[1][x1] = DerivationGraph(151, 0, 65, 29, mgrap[x1]);
@@ -150,7 +150,7 @@ grap[t][tt]=0;
     grap[30][x1] = DerivationGraph(293, 0, 149, 90, mgrap[x1]);
     grap[31][x1] = DerivationGraph(293, 92, 64, 29, mgrap[x1]);
 
-//中間フラグ
+//中間フラグ (Intermediate flag)
     grap[20][x1] = DerivationGraph(40, 182, 40, 60, mgrap[x1]);
 
 
