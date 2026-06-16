@@ -4801,7 +4801,7 @@ void FillScreen()
 }
 
 //画像の読み込み
-SDL_Surface *loadimage(string x)
+SDL_Surface *loadimage(std::string x)
 {
 //mgrap[a]=LoadGraph(b);
     return LoadGraph(x.c_str());
@@ -4841,7 +4841,7 @@ DrawString(a,b,d,color);
 */
 
 //文字
-void str(string x, int a, int b)
+void str(std::string x, int a, int b)
 {
 //char d[]="あ";
     DrawString(a, b, x.c_str(), color);
@@ -10559,7 +10559,7 @@ void ttmsg()
 
 }				//ttmsg
 
-void txmsg(string x, int a)
+void txmsg(std::string x, int a)
 {
     int xx = 6;
 

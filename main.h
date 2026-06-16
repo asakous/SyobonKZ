@@ -2,7 +2,6 @@
 #define SYOBON_MAIN_H
 
 #include "DxLib.h"
-using namespace std;
 
 #define SHORT
 
@@ -76,7 +75,7 @@ void fillarc(int a, int b, int c, int d);
 void FillScreen();
 SDL_Surface *grap[161][8];
 SDL_Surface *mgrap[51];
-SDL_Surface *loadimage(string b);
+SDL_Surface *loadimage(std::string b);
 SDL_Surface *loadimage(int a, int x, int y, int r, int z);
 int mirror;
 void drawimage(SDL_Surface * mx, int a, int b);
@@ -90,7 +89,7 @@ void ot(Mix_Chunk * x);
 void bgmchange(Mix_Music * x);
 
 //文字
-void str(string c, int a, int b);
+void str(std::string c, int a, int b);
 
 
 //)
@@ -162,7 +161,7 @@ int titem[tmax], txtype[tmax];
 //メッセージブロック
 int tmsgtm, tmsgtype, tmsgx, tmsgy, tmsgnobix, tmsgnobiy, tmsg;
 void ttmsg();
-void txmsg(string x, int a);
+void txmsg(std::string x, int a);
 void setfont(int x, int y);
 
 //効果を持たないグラ
@@ -242,7 +241,7 @@ int blacktm = 1, blackx = 0;
 //自由な値
 int xx[91];
 double xd[11];
-string xs[31];
+std::string xs[31];
 
 
 //タイマー測定
