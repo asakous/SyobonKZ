@@ -2,9 +2,16 @@
 修改 main.cpp 上的日文語句用 AI 機翻成翻體中文 (Codex)
 # Google antigravity 修改
 把視窗由固定左上大小改為自動偵測
-Prompt:修改遊戲 SDL 視窗大小可自動偵測目前營幕解析度然後自動設定
+
+Prompt:修改遊戲 SDL 視窗大小可自動偵測目前營幕解析度然後自動設定。
+
+Batocera 4.3.1 測試可放大置中 
 # Makefile
 Claude Code 改成符合 Ubuntu 22 格式的 Makefile 。
+
+<img width="1920" height="1080" alt="screenshot-2026 06 16-12h20 57" src="https://github.com/user-attachments/assets/dc9dc596-aa6e-4581-bde5-b77408dedd7b" />
+
+<img width="1920" height="1080" alt="screenshot-2026 06 16-12h24 02" src="https://github.com/user-attachments/assets/8e77d405-b960-4521-9c5c-5944e48f509c" />
 
 SyobonKZ
 ==================
