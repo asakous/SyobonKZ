@@ -17,13 +17,29 @@ int DxLib_Init()
 	return -1;
     }
 
-    if (!
-	(screen =
-	 SDL_SetVideoMode(480 /*(int)fmax/100 */ ,
-			  420 /*(int)fymax/100 */ , 32,
+    const SDL_VideoInfo* info = SDL_GetVideoInfo();
+    int screen_w = 480;
+    int screen_h = 420;
+    if (info && info->current_w > 0 && info->current_h > 0) {
+        screen_w = info->current_w;
+        screen_h = info->current_h;
+    }
+
+    if (!(real_screen =
+	 SDL_SetVideoMode(screen_w, screen_h, 32,
 			  SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE))) {
 	SDL_Quit();
 	return -1;
+    }
+
+    screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 480, 420, 32,
+                                  real_screen->format->Rmask,
+                                  real_screen->format->Gmask,
+                                  real_screen->format->Bmask,
+                                  real_screen->format->Amask);
+    if (!screen) {
+        SDL_Quit();
+        return -1;
     }
 
     SDL_WM_SetCaption("Syobon Action (しょぼんのアクション)",
@@ -61,7 +77,8 @@ int DxLib_Init()
 }
 
 //Main screen
-SDL_Surface *screen;
+SDL_Surface *screen = NULL;
+SDL_Surface *real_screen = NULL;
 
 //Fonts
 byte fontsize = 0;
@@ -159,6 +176,15 @@ void UpdateKeys()
 		}
 	    }
 	    break;
+	case SDL_VIDEORESIZE:
+	    {
+		SDL_Surface* new_real = SDL_SetVideoMode(event.resize.w, event.resize.h, 32,
+							 SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
+		if (new_real) {
+		    real_screen = new_real;
+		}
+	    }
+	    break;
 	case SDL_QUIT:
 	    ex = true;
 	    break;
@@ -180,10 +206,47 @@ byte CheckHitKey(int key)
 byte WaitKey()
 {
     SDL_Event event;
-    while (true) {
-	while (SDL_PollEvent(&event))
-	    if (event.type == SDL_KEYDOWN)
-		return event.key.keysym.sym;
+    while (SDL_WaitEvent(&event)) {
+	if (event.type == SDL_KEYDOWN)
+	    return event.key.keysym.sym;
+	if (event.type == SDL_QUIT) {
+	    ex = true;
+	    return SDLK_ESCAPE;
+	}
+	if (event.type == SDL_VIDEORESIZE) {
+	    SDL_Surface* new_real = SDL_SetVideoMode(event.resize.w, event.resize.h, 32,
+						     SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
+	    if (new_real) {
+		real_screen = new_real;
+	    }
+	}
+    }
+    return 0;
+}
+
+void ScreenFlip()
+{
+    if (real_screen && screen) {
+        SDL_FillRect(real_screen, NULL, 0);
+
+        int W = real_screen->w;
+        int H = real_screen->h;
+        SDL_Rect dstrect;
+        
+        if (W * 420 > H * 480) {
+            dstrect.h = H;
+            dstrect.w = H * 480 / 420;
+            dstrect.x = (W - dstrect.w) / 2;
+            dstrect.y = 0;
+        } else {
+            dstrect.w = W;
+            dstrect.h = W * 420 / 480;
+            dstrect.x = 0;
+            dstrect.y = (H - dstrect.h) / 2;
+        }
+
+        SDL_SoftStretch(screen, NULL, real_screen, &dstrect);
+        SDL_Flip(real_screen);
     }
 }
 

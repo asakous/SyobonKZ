@@ -22,7 +22,7 @@
 #define FALSE 0
 #define byte unsigned char
 
-#define ScreenFlip() SDL_Flip(screen)
+void ScreenFlip();
 #define GetNowCount() SDL_GetTicks()
 
 //UNIMPLEMENTED - macro substitution
@@ -42,6 +42,7 @@ int DxLib_Init();
 
 //Main screen
 extern SDL_Surface *screen;
+extern SDL_Surface *real_screen;
 
 //Fonts
 #define FONT_MAX 64
