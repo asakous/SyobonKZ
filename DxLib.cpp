@@ -21,7 +21,7 @@ int DxLib_Init()
 	(screen =
 	 SDL_SetVideoMode(480 /*(int)fmax/100 */ ,
 			  420 /*(int)fymax/100 */ , 32,
-			  SDL_SWSURFACE | SDL_DOUBLEBUF))) {
+			  SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE))) {
 	SDL_Quit();
 	return -1;
     }
