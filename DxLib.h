@@ -28,7 +28,7 @@
 //UNIMPLEMENTED - macro substitution
 #define SetFontThickness(f);
 #define StopSoundMem(s);
-#define ChangeVolumeSoundMem(s, v);
+//#define ChangeVolumeSoundMem(s, v); //+KZ seems unused
 
 //Sound
 #define DX_PLAYTYPE_LOOP -1
