@@ -1,3 +1,8 @@
++KZ NOTE: This file is from https://yaruki0.net/programs/action.html
+
+このゲームは ver0.81です
+
+
 ・最初に
 
 このゲームは自分でプレイするより、
@@ -32,7 +37,7 @@ ESC　…　終了
 
 F1　…　タイトルへ
 
-タイトル時に、１〜８キーを押すと、任意のステージで遊べます。
+タイトル時に、１～９キーを押すと、任意のステージで遊べます。
 
 0キー　…　不思議○ダンジョン(バグが起きる可能性があります)
 
@@ -42,7 +47,7 @@ F1　…　タイトルへ
 
 http://mobile-bbs.com/bbs/bbs.php?id=kafebhizu
 
-に連絡どぞ〜(修正する気はあまりないですけど…)
+に連絡どぞ～(修正する気はあまりないですけど…)
 
 
 
@@ -54,4 +59,4 @@ http://mobile-bbs.com/bbs/bbs.php?id=kafebhizu
 
 それでもいいならばどうぞ。
 
-							大川和樹　より
+							Bluvel　より

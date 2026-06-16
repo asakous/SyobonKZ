@@ -1,13 +1,45 @@
-Open Syobon Action
+SyobonKZ
 ==================
-###### Original game developer: Chiku (ちく)
-###### Open-source port developer: Mathew Velasquez
-###### Developer/maintainer of this fork: Karen／明美 (@angelXwind)
-#### [English] [[日本語]](README_ja.md)
+###### Original games developers: 
+* ###### Chiku (ちく) for Syobon Action
+* ###### Bluvel (大川和樹) for Syobon Action 2
+###### Open Syobon Action developer: Mathew Velasquez
+###### Developer/maintainer of this fork: +KZ (@M0REKZ)
+###### [Syobon Action 2 readme (japanese)](readme_ja.txt)
 
-Open Syobon Action (オープンしょぼんのアクション) is an open-source cross-platform port of the unforgiving Japanese platformer using SDL.
+SyobonKZ is a cross-platform port of the unforgiving Japanese platformer ***Syobon Action***.
 
-It is also called "Shobon no Action," "Neko Mario," "Cat Mario," or "Cat MeOUCHio."
+It is also known as:
+* Cat Mario
+* Shobon no Action
+* Neko Mario
+* Cat MeOUCHio
+* *and other names.....*
+
+About the license
+-----
+Chiku released the source code of Syobon Action to allow others modifying it, however he didnt use a license...
+Instead he included a japanese readme.txt with the following text:
+
+```
+スパゲティソース かつ タブが一度も使用されてないうえ、
+クラスわけ無しにif文大量使用のカオスを解読できる方はどーぞｗ
+ご自由に改造なさって下さい。
+
+ただ、そのままのソースを配布するのはご遠慮下さい。
+```
+
+In english it somewhat translates to:
+
+```
+Spaghetti sauce. The tabs aren't used even once, and the code is a chaotic mess of tons of if statements without any class divisions. If you can decipher it, go ahead!
+Feel free to modify it as you like.
+
+However, please refrain from distributing the source code as is.
+```
+
+So, as you can see, Syobon Action mods based on the original code can NOT use a open source license, due to the amount of developers that modified it and the unclear license situation.
+
 
 Notes
 -----
@@ -32,7 +64,7 @@ Controls (Keyboard)
 
 Bugs
 ----
-Please report any bugs at the GitHub issue tracker: https://github.com/angelXwind/OpenSyobonAction/issues
+Please report any bugs at the GitHub issue tracker: https://github.com/M0REKZ/SyobonKZ/issues
 
 Command Line Arguments
 ----------------------
@@ -40,11 +72,14 @@ Command Line Arguments
 
 Dependencies
 ------------
-* SDL
-* SDL_image
-* SDL_mixer
-* SDL_ttf
-* SDL_gfx
+This project requires libraries that are old and may not be directly available in your package manager.
+
+* pkg-config (for lib searching)
+* SDL 1.2 (or sdl12-compat with SDL2)
+* SDL_image 1.2
+* SDL_mixer 1.2
+* SDL_ttf 1.2
+* SDL_gfx (dont confuse with SDL***2***_gfx)
 
 Gamepad Notes
 -------------
@@ -53,11 +88,19 @@ Your gamepad or joystick may not work by default with Open Syobon Action. Check 
 Unimplemented
 -------------
 * Font thickness (Not really important)
-* Port to other operating systems (OS X, iOS, Android, etc.)
+* Port to other operating systems (iOS, Android, etc.)
 
 Release Changelog
 -----------------
-**Open Syobon Action RC 3**
+**SyobonKZ V1 (in development)**
+* Fixed missing Syobon Action 2 assets
+* Fix non-transparent sprites
+* Fix C++ warnings
+* Fix a out of bounds memory access
+* Fix including SDL libraries by using pkg-config
+* Fix other random bugs...
+
+**Open Syobon Action RC 3 (Karen／明美 fork)**
 * Fixed audio on Windows 7 and above
 
 **Open Syobon Action RC 2**
