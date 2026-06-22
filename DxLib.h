@@ -5,8 +5,8 @@
 #define SYOBON_DXLIB_H
 
 #include <SDL.h>
-#include <SDL_rotozoom.h>
-#include <SDL_gfxPrimitives.h>
+#include <SDL2_rotozoom.h>
+#include <SDL2_gfxPrimitives.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
@@ -15,6 +15,7 @@
 #include <math.h>
 #include <string>
 #include <locale.h>
+#include <map>
 
 #include "joyconfig.h"
 
@@ -42,7 +43,9 @@ int DxLib_Init();
 
 //Main screen
 extern SDL_Surface *screen;
-extern SDL_Surface *real_screen;
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
+extern SDL_Texture *texture;
 
 //Fonts
 #define FONT_MAX 64
@@ -79,11 +82,12 @@ void DrawFormatString(int a, int b, Uint32 color, const char *str, ...);
 #define KEY_INPUT_0 SDLK_0
 
 extern SDL_Joystick* joystick;
+extern SDL_JoystickID joystick_id;
 
 void UpdateKeys();
 byte ProcessMessage();
 byte CheckHitKey(int key);
-byte WaitKey();
+int WaitKey();
 
 #define GetColor(r, g, b) SDL_MapRGB(screen->format, r, g, b)
 

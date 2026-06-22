@@ -4736,6 +4736,18 @@ void deinit()
         SDL_FreeSurface(screen);
         screen = NULL;
     }
+    if (texture) {
+        SDL_DestroyTexture(texture);
+        texture = NULL;
+    }
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+        renderer = NULL;
+    }
+    if (window) {
+        SDL_DestroyWindow(window);
+        window = NULL;
+    }
 
 //Close libraries
     IMG_Quit();
@@ -4750,7 +4762,7 @@ void deinit()
 void setcolor(int red, int green, int blue)
 {
     color = GetColor(red, green, blue);
-    gfxcolor = red << 8 * 3 | green << 8 * 2 | blue << 8 | 0xFF;
+    gfxcolor = ((Uint32)red << 24) | ((Uint32)green << 16) | ((Uint32)blue << 8) | 0xFF;
 }
 
 //色かえ(黒)(白)
@@ -4767,37 +4779,98 @@ void setc1()
 //点
 void drawpixel(int a, int b)
 {
-    pixelColor(screen, a, b, gfxcolor);
+    SDL_Rect rect = { a, b, 1, 1 };
+    SDL_FillRect(screen, &rect, color);
 }
 
 //線
 void drawline(int a, int b, int c, int d)
 {
-    lineColor(screen, a, b, c, d, gfxcolor);
+    int x = a < c ? a : c;
+    int y = b < d ? b : d;
+    int w = abs(c - a) + 1;
+    int h = abs(d - b) + 1;
+    SDL_Rect rect = { x, y, w, h };
+    SDL_FillRect(screen, &rect, color);
 }
 
 //四角形(塗り無し)
 void drawrect(int a, int b, int c, int d)
 {
-    rectangleColor(screen, a, b, a + c - 1, b + d - 1, gfxcolor);
+    SDL_Rect top = { a, b, c, 1 };
+    SDL_Rect bottom = { a, b + d - 1, c, 1 };
+    SDL_Rect left = { a, b, 1, d };
+    SDL_Rect right = { a + c - 1, b, 1, d };
+    SDL_FillRect(screen, &top, color);
+    SDL_FillRect(screen, &bottom, color);
+    SDL_FillRect(screen, &left, color);
+    SDL_FillRect(screen, &right, color);
 }
 
 //四角形(塗り有り)
 void fillrect(int a, int b, int c, int d)
 {
-    boxColor(screen, a, b, a + c - 1, b + d - 1, gfxcolor);
+    SDL_Rect rect = { a, b, c, d };
+    SDL_FillRect(screen, &rect, color);
 }
 
 //円(塗り無し)
 void drawarc(int a, int b, int c, int d)
 {
-    ellipseColor(screen, a, b, c, d, gfxcolor);
+    int cx = a;
+    int cy = b;
+    int radius = c;
+    
+    int x = radius;
+    int y = 0;
+    int err = 0;
+
+    while (x >= y) {
+        auto draw_pixel = [](int px, int py, Uint32 col) {
+            if (px >= 0 && px < screen->w && py >= 0 && py < screen->h) {
+                Uint32 *pixels = (Uint32*)screen->pixels;
+                pixels[py * screen->w + px] = col;
+            }
+        };
+        draw_pixel(cx + x, cy + y, color);
+        draw_pixel(cx + y, cy + x, color);
+        draw_pixel(cx - y, cy + x, color);
+        draw_pixel(cx - x, cy + y, color);
+        draw_pixel(cx - x, cy - y, color);
+        draw_pixel(cx - y, cy - x, color);
+        draw_pixel(cx + y, cy - x, color);
+        draw_pixel(cx + x, cy - y, color);
+
+        y += 1;
+        if (err <= 0) {
+            err += 2*y + 1;
+        }
+        if (err > 0) {
+            x -= 1;
+            err -= 2*x + 1;
+        }
+    }
 }
 
 //円(塗り有り)
 void fillarc(int a, int b, int c, int d)
 {
-    filledEllipseColor(screen, a, b, c, d, gfxcolor);
+    int cx = a;
+    int cy = b;
+    int radius = c;
+    
+    for (int dy = -radius; dy <= radius; ++dy) {
+        for (int dx = -radius; dx <= radius; ++dx) {
+            if (dx*dx + dy*dy <= radius*radius) {
+                int px = cx + dx;
+                int py = cy + dy;
+                if (px >= 0 && px < screen->w && py >= 0 && py < screen->h) {
+                    Uint32 *pixels = (Uint32*)screen->pixels;
+                    pixels[py * screen->w + px] = color;
+                }
+            }
+        }
+    }
 }
 
 void FillScreen()

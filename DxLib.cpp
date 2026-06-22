@@ -3,8 +3,9 @@
 #define SYOBON_COLOR_KEY(img) SDL_MapRGB(img, 9 * 16 + 9, 255, 255)
 
 SDL_Joystick* joystick;
+SDL_JoystickID joystick_id = -1;
 
-bool keysHeld[SDLK_LAST];
+std::map<SDL_Keycode, bool> keysHeld;
 bool sound = true;
 void deinit();
 int DxLib_Init()
@@ -17,33 +18,56 @@ int DxLib_Init()
 	return -1;
     }
 
-    const SDL_VideoInfo* info = SDL_GetVideoInfo();
+    SDL_DisplayMode dm;
     int screen_w = 480;
     int screen_h = 420;
-    if (info && info->current_w > 0 && info->current_h > 0) {
-        screen_w = info->current_w;
-        screen_h = info->current_h;
+    if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
+        screen_w = dm.w;
+        screen_h = dm.h;
     }
 
-    if (!(real_screen =
-	 SDL_SetVideoMode(screen_w, screen_h, 32,
-			  SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE))) {
-	SDL_Quit();
-	return -1;
-    }
-
-    screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 480, 420, 32,
-                                  real_screen->format->Rmask,
-                                  real_screen->format->Gmask,
-                                  real_screen->format->Bmask,
-                                  real_screen->format->Amask);
-    if (!screen) {
+    window = SDL_CreateWindow("Syobon Action (しょぼんのアクション)",
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              screen_w, screen_h,
+                              SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        fprintf(stderr, "Unable to create window: %s\n", SDL_GetError());
         SDL_Quit();
         return -1;
     }
 
-    SDL_WM_SetCaption("Syobon Action (しょぼんのアクション)",
-		      NULL);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!renderer) {
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    }
+    if (!renderer) {
+        fprintf(stderr, "Unable to create renderer: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
+
+    SDL_RenderSetLogicalSize(renderer, 480, 420);
+
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 480, 420);
+    if (!texture) {
+        fprintf(stderr, "Unable to create texture: %s\n", SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
+
+    screen = SDL_CreateRGBSurface(0, 480, 420, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    if (!screen) {
+        fprintf(stderr, "Unable to create screen surface: %s\n", SDL_GetError());
+        SDL_DestroyTexture(texture);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
+
     SDL_ShowCursor(SDL_DISABLE);
 
     if(IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
@@ -65,10 +89,14 @@ int DxLib_Init()
         sound = false;
         }
     //Try to get a joystick
+    //
+    /* Batocera 會亂掉。就用 PADtoKey
     joystick = SDL_JoystickOpen(0);
-
-    for (int i = 0; i < SDLK_LAST; i++)
-	keysHeld[i] = false;
+    if (joystick) {
+        joystick_id = SDL_JoystickInstanceID(joystick);
+    }
+    */
+    keysHeld.clear();
     for (int i = 0; i < FONT_MAX; i++)
 	font[i] = NULL;
     srand(time(NULL));
@@ -78,7 +106,9 @@ int DxLib_Init()
 
 //Main screen
 SDL_Surface *screen = NULL;
-SDL_Surface *real_screen = NULL;
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
+SDL_Texture *texture = NULL;
 
 //Fonts
 byte fontsize = 0;
@@ -154,7 +184,7 @@ void UpdateKeys()
 	    keysHeld[event.key.keysym.sym] = false;
 	    break;
 	case SDL_JOYAXISMOTION:
-	    if(event.jaxis.which == 0)
+	    if(event.jaxis.which == joystick_id)
 	    {
 		if(event.jaxis.axis == JOYSTICK_XAXIS)
 		{
@@ -176,15 +206,6 @@ void UpdateKeys()
 		}
 	    }
 	    break;
-	case SDL_VIDEORESIZE:
-	    {
-		SDL_Surface* new_real = SDL_SetVideoMode(event.resize.w, event.resize.h, 32,
-							 SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
-		if (new_real) {
-		    real_screen = new_real;
-		}
-	    }
-	    break;
 	case SDL_QUIT:
 	    ex = true;
 	    break;
@@ -203,7 +224,7 @@ byte CheckHitKey(int key)
     return keysHeld[key];
 }
 
-byte WaitKey()
+int WaitKey()
 {
     SDL_Event event;
     while (SDL_WaitEvent(&event)) {
@@ -213,40 +234,17 @@ byte WaitKey()
 	    ex = true;
 	    return SDLK_ESCAPE;
 	}
-	if (event.type == SDL_VIDEORESIZE) {
-	    SDL_Surface* new_real = SDL_SetVideoMode(event.resize.w, event.resize.h, 32,
-						     SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE);
-	    if (new_real) {
-		real_screen = new_real;
-	    }
-	}
     }
     return 0;
 }
 
 void ScreenFlip()
 {
-    if (real_screen && screen) {
-        SDL_FillRect(real_screen, NULL, 0);
-
-        int W = real_screen->w;
-        int H = real_screen->h;
-        SDL_Rect dstrect;
-        
-        if (W * 420 > H * 480) {
-            dstrect.h = H;
-            dstrect.w = H * 480 / 420;
-            dstrect.x = (W - dstrect.w) / 2;
-            dstrect.y = 0;
-        } else {
-            dstrect.w = W;
-            dstrect.h = W * 420 / 480;
-            dstrect.x = 0;
-            dstrect.y = (H - dstrect.h) / 2;
-        }
-
-        SDL_SoftStretch(screen, NULL, real_screen, &dstrect);
-        SDL_Flip(real_screen);
+    if (renderer && texture && screen) {
+        SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
     }
 }
 
@@ -280,7 +278,7 @@ void DrawTurnGraphZ(int a, int b, SDL_Surface * mx)
         offset.y = b;
 
         SDL_Surface *flipped = zoomSurface(mx, -1, 1, 0);
-        SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
+        SDL_SetColorKey(flipped, SDL_TRUE,
                 SYOBON_COLOR_KEY(flipped->format));
         SDL_BlitSurface(flipped, &srcrect, screen, &offset);
         SDL_FreeSurface(flipped);
@@ -301,7 +299,7 @@ void DrawVertTurnGraph(int a, int b, SDL_Surface * mx)
         offset.y = b - mx->h / 2;
 
         SDL_Surface *flipped = zoomSurface(mx, -1, -1, 0);
-        SDL_SetColorKey(flipped, SDL_SRCCOLORKEY,
+        SDL_SetColorKey(flipped, SDL_TRUE,
                 SYOBON_COLOR_KEY(flipped->format));
         SDL_BlitSurface(flipped, &srcrect, screen, &offset);
         SDL_FreeSurface(flipped);
@@ -312,10 +310,10 @@ SDL_Surface *DerivationGraph(int srcx, int srcy, int width, int height,
 			     SDL_Surface * src)
 {
     SDL_Surface *img =
-	SDL_CreateRGBSurface(SDL_SWSURFACE, width, height,
+	SDL_CreateRGBSurface(0, width, height,
 			     screen->format->BitsPerPixel,
-			     src->format->Rmask, src->format->Bmask,
-			     src->format->Gmask, src->format->Amask);
+			     src->format->Rmask, src->format->Gmask,
+			     src->format->Bmask, src->format->Amask);
 
     SDL_Rect offset;
     offset.x = srcx;
@@ -324,7 +322,7 @@ SDL_Surface *DerivationGraph(int srcx, int srcy, int width, int height,
     offset.h = height;
 
     SDL_BlitSurface(src, &offset, img, NULL);
-    SDL_SetColorKey(img, SDL_SRCCOLORKEY,
+    SDL_SetColorKey(img, SDL_TRUE,
 		    SYOBON_COLOR_KEY(img->format));
     return img;
 }
@@ -351,7 +349,7 @@ SDL_Surface *LoadGraph(const char *filename, bool fix)
             {
                 printf("WARNING: %s pixel format is not the one required, trying to fix...\n", filename);
 
-                SDL_Surface *newimage = SDL_ConvertSurface(image, &fmt, SDL_SWSURFACE | SDL_SRCALPHA | SDL_SRCCOLORKEY);
+                SDL_Surface *newimage = SDL_ConvertSurface(image, &fmt, 0);
                 if(newimage)
                 {
                     printf("Successfully converted\n");

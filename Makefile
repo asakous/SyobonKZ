@@ -1,7 +1,5 @@
-CFLAGS  := $(shell sdl-config --cflags) \
-           $(shell pkg-config --cflags SDL_gfx SDL_ttf SDL_mixer SDL_image)
-LDFLAGS := $(shell sdl-config --libs) \
-           $(shell pkg-config --libs SDL_gfx SDL_ttf SDL_mixer SDL_image)
+CFLAGS  := $(shell pkg-config --cflags sdl2 SDL2_gfx SDL2_ttf SDL2_mixer SDL2_image)
+LDFLAGS := $(shell pkg-config --libs sdl2 SDL2_gfx SDL2_ttf SDL2_mixer SDL2_image)
 
 OBJS := main.o loadg.o DxLib.o
 
